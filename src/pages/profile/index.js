@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Box from "3box";
 import { connect } from "react-redux";
 
 function Profile(props) {
   const { user } = props;
 
-  initialize3Box(user);
+  useEffect(() => {
+    initialize3Box(user);
+  }, []);
 
   return <div>Profile Setup</div>;
 }
