@@ -1,11 +1,8 @@
-import IPFS from "ipfs";
-const ipfs = new IPFS();
-
 const initDB = async () => {
-  await ipfs.ready;
+  const ipfs = await window.Ipfs.create();
   window.ipfs = ipfs;
   //let aviondb = await window.AvionDB.init("dbird-dev", ipfs);
-  let aviondb = await window.AvionDB.init("chat-dev-2", ipfs);
+  let aviondb = await window.AvionDB.init("chat-dev-4", ipfs);
   window.aviondb = aviondb;
   return aviondb;
 };
