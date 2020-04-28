@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === "development" && true) {
   middlewares.push(logger);
 }
 const store = createStore(reducers, compose(applyMiddleware(...middlewares)));
-
+window.store = store;
 ReactDOM.render(
   <Provider store={store}>
     <App />

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Login from "./pages/login";
 import Profile from "./pages/profile";
+import Chat from "./pages/chat";
 //import Home from "./pages/home";
 //import Feed from "./pages/feed";
 
@@ -12,6 +13,7 @@ function App() {
       <Switch>
         <Route exact path="/login" component={Login} />
         <Route exact path="/profile/setup" component={Profile} />
+        <Route exact path="/chat" component={Chat} />
         {/* 
         <Route exact path="/:handle" component={Profile} />
         <Route exact path="/" component={Home} />

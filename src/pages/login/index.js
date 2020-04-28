@@ -1,64 +1,95 @@
 import React, { Fragment } from "react";
-import Onboard from "bnc-onboard";
+import clsx from "clsx";
+import { makeStyles } from "@material-ui/core/styles";
+import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
 import { login } from "../../redux/user/actions";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { Button } from "@material-ui/core";
 
-const startLogin = props => {
-  const { login } = props;
-
-  const onboard = Onboard({
-    dappId: "32dedbdd-255e-4e93-a66f-7e558c24893a", // [String] The API key created by step one above
-    networkId: 4, // [Integer] The Ethereum network ID your Dapp uses.
-    subscriptions: {
-      address: address => {
-        console.log("user address has changed:", address);
-        login({ address: address });
-      },
-      network: networkId => {
-        console.log("user network has changed:", networkId);
-        login({ networkId: networkId });
-      },
-      balance: balance => {
-        console.log("user balance has changed:", balance);
-        login({ balance: balance });
-      },
-      wallet: wallet => {
-        console.log(
-          "a new wallet has been selected by user",
-          wallet.provider,
-          wallet.name
-        );
-        login({ loginMethod: wallet.name });
-      }
-    }
-  });
-
-  return onboard;
-};
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 200,
+  },
+  dense: {
+    marginTop: 19,
+  },
+  menu: {
+    width: 200,
+  },
+}));
 
 function Login(props) {
   const history = useHistory();
-  const onboard = startLogin(props);
-
-  onboard.walletSelect().then(_res => {
-    onboard.walletCheck().then(res => {
-      console.log(res);
-      history.push("/profile/setup");
-    });
+  const classes = useStyles();
+  const [values, setValues] = React.useState({
+    email: "",
+    password: "",
   });
 
+  //props.login();
+
+  const handleChange = (name) => (event) => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  if (
+    Object.keys(props.user).includes("email") &&
+    Object.keys(props.user).includes("password")
+  ) {
+    history.push("/profile/setup");
+  }
+
   return (
-    <Fragment>
-      <center>
-        <font size="7">DBird</font>
-      </center>
-    </Fragment>
+    <center>
+      <form className={classes.container} noValidate autoComplete="off">
+        <TextField
+          id="standard-email"
+          label="Email"
+          className={classes.textField}
+          value={values.email}
+          onChange={handleChange("email")}
+          margin="normal"
+        />
+        <TextField
+          id="standard-password"
+          label="Password"
+          type="password"
+          className={classes.textField}
+          value={values.password}
+          onChange={handleChange("password")}
+          margin="normal"
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            props.login({
+              email: values.email,
+              password: values.password,
+            });
+          }}
+        >
+          Primary
+        </Button>
+      </form>
+    </center>
   );
 }
 
-const mapDispatchToProps = dispatch => ({
-  login: payload => dispatch(login(payload))
+const mapDispatchToProps = (dispatch) => ({
+  login: (payload) => dispatch(login(payload)),
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
